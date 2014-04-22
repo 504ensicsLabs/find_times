@@ -50,7 +50,7 @@ def find_epoch(data):
                 intval = struct.unpack(fmt, data[i:i + 4])[0]
                 ts = dt.datetime.utcfromtimestamp(intval)
                 yield i, ts
-            except:
+            except (struct.error, ValueError):
                 continue
 
 
@@ -61,7 +61,7 @@ def find_uuid(data):
             uuid1time = ts_uuid.time
             ts = dt.datetime.utcfromtimestamp((uuid1time - 0x01b21dd213814000L) * 100 / 1e9)
             yield i, ts
-        except:
+        except ValueError:
             continue
 
 
@@ -78,13 +78,13 @@ def find_dosdatetime(data):
             year = ((tdate & 0xFE00) >> 9) + 1980
             try:
                 ts = dt.datetime(year, month, day, hours, mins, secs)
-            except:
+            except ValueError:
                 try:
                     ts = dt.datetime(year, month, day)
-                except:
+                except ValueError:
                     continue
             yield i, ts
-        except:
+        except struct.error:
             continue
 
 
@@ -169,7 +169,7 @@ def parse_systemtime(timestamp):
 
     try:
         ret = dt.datetime(year, month, days, hours, mins, secs, milli_secs * 1000)
-    except:
+    except ValueError:
         ret = None
     return ret
 
@@ -181,7 +181,7 @@ def find_systemtime(data):
             ts = parse_systemtime(intval)
             if ts is not None:
                 yield i, ts
-        except:
+        except struct.error:
             continue
 
 
@@ -196,7 +196,7 @@ def find_filetime(data):  # Done
                 toepoch = (intval - 116444736000000000) // 10000000
                 ts = dt.datetime.utcfromtimestamp(toepoch)
                 yield i, ts
-            except:
+            except (struct.error, ValueError):
                 continue
 
 
@@ -234,24 +234,24 @@ def find_string_dates(data):  # Done
             try:  # consider data as Y-M-D
                 ts = dt.datetime(valA, valB, valC)
                 yield sIdx, ts
-            except:
+            except ValueError:
                 pass
             try:  # consider data as Y-D-M
                 ts = dt.datetime(valA, valC, valB)
                 yield sIdx, ts
-            except:
+            except ValueError:
                 pass
             try:  # consider data as M-D-Y
                 ts = dt.datetime(valC, valA, valB)
                 yield sIdx, ts
-            except:
+            except ValueError:
                 pass
             try:  # consider data as D-M-Y
                 ts = dt.datetime(valC, valB, valA)
                 yield sIdx, ts
-            except:
+            except ValueError:
                 pass
-        except:
+        except ValueError:
             pass
         match = str_regex_short.search(data, sIdx)  # find next match in data
 
@@ -268,11 +268,11 @@ def find_string_dates(data):  # Done
         try:  # try parsing the match using a full named month
             ts = dt.datetime.strptime(strDate, "%Y %B %d")
             yield sIdx, ts
-        except:
+        except ValueError:
             try:  # try parsing the match using an abbrev month
                 ts = dt.datetime.strptime(strDate, "%Y %b %d")
                 yield sIdx, ts
-            except:
+            except ValueError:
                 pass
         match = str_regex_long.search(data, sIdx)  # find next match in data
 

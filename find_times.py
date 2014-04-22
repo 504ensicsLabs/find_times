@@ -383,7 +383,12 @@ def main():
         high_date = dt.datetime.utcfromtimestamp(os.path.getmtime(args.fname)).date()
     elif args.high_filter:  # use the date specified on cli
         high_date = dt.datetime.strptime(args.high_filter, '%Y/%m/%d').date()
-    print('Using date filters:\n\t{}  -  {}\n\t'.format(low_date, high_date))
+
+    summaryText = '#Using date filters:\n#\t{}  -  {}\n'.format(low_date, high_date)
+    if args.use_lastwrite:
+        summaryText += '#\t[lastwrite] as additional upper filter\n'
+    summaryText += '#{}'.format('\t'.join(['lastwrite', 'ts_type', 'ts', 'key', 'value', 'dataoffset']))
+    print(summaryText)
 
     for curKey, curPath in get_sub_keys(reg.get_root_key()):  # foreach key in regfile
         lastwrite = curKey.get_last_written_time()  # get the lastwrite time on key
@@ -398,7 +403,7 @@ def main():
                     continue  # failed lastwrite filter
 
                 if low_date <= result.date() <= high_date:
-                    print('\t'.join([str(lastwrite), ts_type, str(result), curPath, curValue.get_name(), pIdx, vData]))
+                    print('\t'.join([str(lastwrite), str(ts_type), str(result), str(curPath), str(curValue.get_name()), str(pIdx)]))
 
 
 if __name__ == '__main__':

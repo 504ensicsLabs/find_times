@@ -387,7 +387,7 @@ def main():
     summaryText = '#Using date filters:\n#\t{}  -  {}\n'.format(low_date, high_date)
     if args.use_lastwrite:
         summaryText += '#\t[lastwrite] as additional upper filter\n'
-    summaryText += '#{}'.format('\t'.join(['lastwrite', 'ts_type', 'ts', 'key', 'value', 'dataoffset']))
+    summaryText += '#{}'.format('\t'.join(['keyLastWrite', 'keyName', 'valueName', 'tsType', 'dataOffset', 'ts']))
     print(summaryText)
 
     for curKey, curPath in get_sub_keys(reg.get_root_key()):  # foreach key in regfile
@@ -403,7 +403,7 @@ def main():
                     continue  # failed lastwrite filter
 
                 if low_date <= result.date() <= high_date:
-                    print('\t'.join([str(lastwrite), str(ts_type), str(result), str(curPath), str(curValue.get_name()), str(pIdx)]))
+                    print('\t'.join([str(lastwrite), str(curPath), str(curValue.get_name()), str(ts_type), str(pIdx), str(result)]))
 
 
 if __name__ == '__main__':

@@ -345,11 +345,11 @@ def cmdArgParse():
     parser.add_argument('--use-mod',
                         dest='use_lastmodtime',
                         action='store_true',
-                        help='filter out times later than the hive last modification time')
+                        help='Use the last modification time of the hive as the upper date filter')
     parser.add_argument('--use-lastwrite',
                         dest='use_lastwrite',
                         action='store_true',
-                        help='filter out times later than the owning key lastwrite time')
+                        help='Filter out times later than the owning key lastwrite time')
     parser.add_argument('-f',
                         dest='fname',
                         metavar='HIVE',

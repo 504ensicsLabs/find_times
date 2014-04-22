@@ -9,7 +9,10 @@ Discover potential timestamps within the Windows Registry
   To contribute to the results, please use this google docs spreadsheet so we can organize our efforts:  
   <a href="https://docs.google.com/spreadsheets/d/1Tcj0ucpDJcTbh-YFs2r-P2u00eeEu0AdqGfe_Lj0qbU/edit?usp=sharing">Collaborative Results</a>
 
-Developers:
+###Dependencies:
+  * pyregf
+
+###Developers:
   * Andrew Case
   * Jerry Stormo
   * Joseph Sylve
